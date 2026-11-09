@@ -16,7 +16,7 @@ services:
     build: ./backend
     environment:
       DB_HOST: db
-      JWT_SECRET: ${JWT_SECRET:-59ad4b7ddd22358e7fe867314867d36ffcd1e2833a6bbb8c1bef054939ac6eeb}
+      JWT_SECRET: ${JWT_SECRET:-}
     ports:
       - "3000:3000"
     depends_on:
