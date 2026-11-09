@@ -1,62 +1,31 @@
 # Kullanıcı Yönetimi
 
-NestJS (REST API, JWT), Angular ve PostgreSQL ile yazılmış basit bir kullanıcı yönetim uygulaması.
+Kullanıcıların yönetildiği basit bir web uygulaması. Backend NestJS, frontend Angular, veritabanı PostgreSQL ile yazıldı.
 
-Yönetici kullanıcıları listeleyebilir, detayına bakabilir, ekleyebilir, güncelleyebilir ve silebilir. Standart kullanıcı sadece kullanıcı listesini görebilir.
+## Kurulum
 
-## Docker ile çalıştırma
-
-Docker kuruluysa tek komut yeterli (veritabanı, backend ve frontend birlikte açılır):
+Bilgisayarda Docker kurulu olmalıdır. Proje klasöründe şu komutu çalıştırın:
 
 ```bash
 docker compose up --build
 ```
 
-İlk açılış birkaç dakika sürer. Terminalde `Nest application successfully started` yazısını gördükten sonra http://localhost:4200 adresini açın. 3000 ve 4200 portlarının boş olması gerekir.
+İlk açılış birkaç dakika sürer. Terminalde `Nest application successfully started` yazısını gördükten sonra tarayıcıda http://localhost:4200 adresini açın. 3000 ve 4200 portlarının boş olması gerekir.
 
-Durdurmak için `Ctrl + C`, ardından `docker compose down`. Veritabanındaki kayıtları da silmek için `docker compose down -v`.
+Durdurmak için `Ctrl + C` yapıp `docker compose down` yazın.
 
-## Docker olmadan çalıştırma
-
-Gereksinimler: Node.js 24.15 veya üzeri ve PostgreSQL 16. PostgreSQL'de `usermgmt` adında boş bir veritabanı oluşturun (kullanıcı `postgres`, şifre `postgres`, port `5432`).
-
-Backend (http://localhost:3000):
-
-```bash
-cd backend
-npm install
-npm run start
-```
-
-Ayrı bir terminalde frontend (http://localhost:4200):
-
-```bash
-cd frontend
-npm install
-npm start
-```
-
-Veritabanı bilgileri `DB_HOST`, `DB_USER`, `DB_PASS` ve `DB_NAME` ortam değişkenleriyle değiştirilebilir. JWT anahtarı için `JWT_SECRET` kullanılır.
-
-## Giriş bilgileri
-
-Tablo ilk açılışta kendiliğinden oluşur ve iki kullanıcı eklenir:
+İlk açılışta iki kullanıcı otomatik oluşturulur:
 
 - Yönetici: `admin` / `admin123`
 - Standart kullanıcı: `user` / `user123`
 
-## API
+## Özellikler
 
-Giriş yapmak için `POST /auth/login` kullanılır. Dönen token, diğer isteklerde `Authorization: Bearer <token>` başlığıyla gönderilir.
+Uygulamaya kullanıcı adı ve şifre ile giriş yapılır. Giriş JWT ile doğrulanır, oturum sayfa yenilense de açık kalır.
 
-```
-GET     /users        kullanıcı listesi (giriş yapmış herkes)
-GET     /users/:id    kullanıcı detayı (yönetici)
-POST    /users        kullanıcı ekleme (yönetici)
-PUT     /users/:id    kullanıcı güncelleme (yönetici)
-DELETE  /users/:id    kullanıcı silme (yönetici)
-```
+İki rol vardır:
 
-## Notlar
+- **Yönetici:** Kullanıcıları listeleyebilir, detayını görebilir, yeni kullanıcı ekleyebilir, güncelleyebilir ve silebilir.
+- **Standart kullanıcı:** Sadece kullanıcı listesini görebilir.
 
-Şifreler bcrypt ile saklanır ve API cevaplarında dönmez. Yetki kontrolü backend'de yapılır, arayüzde sadece yetkisiz butonlar gizlenir. Basit tutmak için `synchronize: true` kullanıldı, gerçek bir projede migration tercih edilir.
+Yetki kontrolü backend'de yapılır, yani arayüzü atlayıp doğrudan API'ye istek atmak da yetkisiz kullanıcılara izin vermez. Şifreler bcrypt ile saklanır ve hiçbir cevapta dönmez. Girilen bilgiler doğrulanır, aynı kullanıcı adı iki kez kullanılamaz.
