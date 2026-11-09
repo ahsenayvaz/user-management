@@ -1,0 +1,91 @@
+<header>
+  <h2>Kullanıcılar</h2>
+  <div>
+    {{ auth.user()?.fullName }} ({{ auth.user()?.role }})
+    <button class="link" (click)="auth.logout()">Çıkış</button>
+  </div>
+</header>
+
+@if (auth.isAdmin) {
+  <button (click)="newUser()">Yeni kullanıcı</button>
+}
+
+@if (error()) {
+  <p class="error">{{ error() }}</p>
+}
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Kullanıcı adı</th>
+      <th>Ad Soyad</th>
+      <th>Rol</th>
+      @if (auth.isAdmin) {
+        <th></th>
+      }
+    </tr>
+  </thead>
+  <tbody>
+    @for (user of users(); track user.id) {
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.fullName }}</td>
+        <td>{{ user.role }}</td>
+        @if (auth.isAdmin) {
+          <td>
+            <button class="link" (click)="showDetail(user.id)">Detay</button>
+            <button class="link" (click)="editUser(user)">Düzenle</button>
+            <button class="link danger" (click)="deleteUser(user)">Sil</button>
+          </td>
+        }
+      </tr>
+    }
+  </tbody>
+</table>
+
+@if (selected(); as user) {
+  <div class="card">
+    <h3>Kullanıcı detayı</h3>
+    <p>ID: {{ user.id }}</p>
+    <p>Kullanıcı adı: {{ user.username }}</p>
+    <p>Ad Soyad: {{ user.fullName }}</p>
+    <p>Rol: {{ user.role }}</p>
+    <button (click)="selected.set(null)">Kapat</button>
+  </div>
+}
+
+@if (form(); as f) {
+  <form class="card" (ngSubmit)="save()">
+    <h3>{{ f.id ? 'Kullanıcıyı düzenle' : 'Yeni kullanıcı' }}</h3>
+
+    <label>
+      Kullanıcı adı
+      <input name="username" [(ngModel)]="f.username" required />
+    </label>
+
+    <label>
+      Şifre {{ f.id ? '(boş bırakılırsa değişmez)' : '' }}
+      <input name="password" type="password" [(ngModel)]="f.password" [required]="!f.id" minlength="6" />
+    </label>
+
+    <label>
+      Ad Soyad
+      <input name="fullName" [(ngModel)]="f.fullName" required />
+    </label>
+
+    <label>
+      Rol
+      <select name="role" [(ngModel)]="f.role">
+        <option value="user">user</option>
+        <option value="admin">admin</option>
+      </select>
+    </label>
+
+    <div>
+      <button type="submit">Kaydet</button>
+      <button type="button" (click)="form.set(null)">İptal</button>
+    </div>
+  </form>
+}

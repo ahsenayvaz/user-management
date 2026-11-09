@@ -1,0 +1,19 @@
+<form class="card" (ngSubmit)="login()">
+  <h2>Giriş</h2>
+
+  <label>
+    Kullanıcı adı
+    <input name="username" [(ngModel)]="username" required />
+  </label>
+
+  <label>
+    Şifre
+    <input name="password" type="password" [(ngModel)]="password" required />
+  </label>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <button type="submit">Giriş yap</button>
+</form>
